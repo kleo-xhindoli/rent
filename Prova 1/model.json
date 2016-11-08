@@ -1,0 +1,36 @@
+"house": {
+	"title": "string",
+	"description": "string",
+	"price": "number",
+	"area": "number",
+	"rooms": "string (3+1)",
+	"location": "string (coords)",
+	"zone": "string",
+	"category": "string",
+	"floor": "number",
+	"gallery": [
+		"string"
+	],
+	"contact": {
+		"phone_no": "string",
+		"email": "string",
+		"full_name": "string"
+	},
+	"additional_details": {
+		"balcony_no": "number",
+		"orientation": "string (N/E/NE...)",
+		"has_parking": "boolean",
+		"is_furnished": "boolean"
+
+	},
+	"administration_options": {
+		"has_user": "boolean",
+		"approved": "boolean",
+		"expiration_date": "date",
+		"password": "string",
+		"featured": "boolean",
+		"available": "boolean"
+	},
+	"user": "{User Object}"
+
+}
