@@ -5,7 +5,7 @@ import Elementi from "./Element";
 import Store1 from "./Stores/Store1"
 import * as Actions from "./Actions/Actions"
 
-export default class Sorting extends React.Component {
+export default class FaqiaPare extends React.Component {
 	constructor(){
 		super();
 		this.state = {

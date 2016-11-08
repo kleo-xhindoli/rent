@@ -39,7 +39,7 @@ export default class Element extends React.Component {
 			              	<Madhesia Madhesia = { madhesia } />
 							<Cmimi Cmimi = {cmimi}/>
 							<Artikulli Vendi = {vendi}/>
-							<Link to="element" query={{ id: id,NrF:nrf}}>Shiko Me Shume</Link>
+							<Link to="postimi" query={{ id: id,NrF:nrf}}>Shiko Me Shume</Link>
 		            	</div>
 					</div>	
 				</div>

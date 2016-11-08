@@ -19,10 +19,10 @@ class Store1 extends EventEmitter {
 				break;
 			}
 			case "SORT":{
-				const cmimi = action.c;
-				const vendi = action.v;
-				const madhesia = action.m;
-				this.sortReklamat(vendi,madhesia,cmimi);
+				const cmimiZgjedhur = action.c;
+				const vendiZgjedhur = action.v;
+				const madhesiaZgjedhur = action.m;
+				this.sortReklamat(vendiZgjedhur,madhesiaZgjedhur,cmimiZgjedhur);
 				break;
 			}
 		}
@@ -45,19 +45,23 @@ class Store1 extends EventEmitter {
 		this.emit("change");
 	}
 
-	sortReklamat(v,m,c){
+	sortReklamat(VendiZgjedhur,MadhesiaZgjedhur,CmimiZgjedhur){
 		g=1;
 		el=[];
 		for (var i = 0; i <= E.length-1; i++) {
-			var cm = E[i].Cmimi.substring(0,E[i].Cmimi.length-1);
-			var madh = E[i].Madhesia.substring(0,E[i].Madhesia.length-1);
-			madh = parseInt(madh);
-			m = parseInt(m);
-			var vnd = E[i].Vendi;
-			if((v==vnd && c>=cm) && m>=madh){
-				console.log("m " + m);
-				console.log("madh " + madh);
-				console.log(m >= madh);
+
+			var cmimiMundesise = E[i].Cmimi.substring(0,E[i].Cmimi.length-1);
+			var madhesiaMundesise = E[i].Madhesia.substring(0,E[i].Madhesia.length-1);
+
+			madhesiaMundesise = parseInt(madhesiaMundesise);
+			MadhesiaZgjedhur = parseInt(MadhesiaZgjedhur);
+
+			cmimiMundesise = parseInt(cmimiMundesise);
+			CmimiZgjedhur = parseInt(CmimiZgjedhur);
+
+			var vendiMundesise = E[i].Vendi;
+
+			if((VendiZgjedhur==vendiMundesise && CmimiZgjedhur>=cmimiMundesise) && MadhesiaZgjedhur>=madhesiaMundesise){
 				el.push(E[i]);
 			}
 		}

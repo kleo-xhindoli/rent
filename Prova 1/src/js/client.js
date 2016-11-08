@@ -2,19 +2,19 @@ import React from "react";
 import ReactDOM from "react-dom";
 import { Router, Route, IndexRoute, hashHistory } from "react-router";
 
-import Layout from "./Layout/Layout";
+import Mundesite_E_Zgjedhjes from "./Layout/Mundesite_E_Zgjedhjes";
 import MainPage from "./Layout/MainPage";
 import Postimi from "./Layout/Postimi";
-import Sorting from "./Layout/Sorting";
+import FaqiaPare from "./Layout/Faqia Pare";
 
 const app = document.getElementById('app');
 
 ReactDOM.render(
   <Router history={hashHistory}>
     <Route path="/" component={MainPage}>
-      <IndexRoute component={Sorting}></IndexRoute>
-      <Route path="mundesit(:Vendi,:Nrf)" name="Mundesit" component={Layout}></Route>
-      <Route path="element(:Vendi,:Nrf)" name="postimi" component={Postimi}></Route>
+      <IndexRoute component={FaqiaPare}></IndexRoute>
+      <Route path="mundesit(:Vendi,:Nrf)" name="Mundesit" component={Mundesite_E_Zgjedhjes}></Route>
+      <Route path="postimi(:Vendi,:Nrf)" name="Postimi" component={Postimi}></Route>
     </Route>
   </Router>,
 app);

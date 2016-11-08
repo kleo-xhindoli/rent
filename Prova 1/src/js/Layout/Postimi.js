@@ -10,6 +10,7 @@ export default class Postimi extends React.Component {
 	constructor(){
 		super();
 		this.state = {
+			id: "0",
 			nr: "0",
 		};
 	}
@@ -22,7 +23,6 @@ export default class Postimi extends React.Component {
 			i=0;
 		}
 		this.setState({nr:i});
-		console.log(i);
 	}
 	klikoPara()
 	{
@@ -33,7 +33,6 @@ export default class Postimi extends React.Component {
 			i=j-1;
 		}
 		this.setState({nr:i});
-		console.log(i);
 	}
 
 	render(){
@@ -60,26 +59,28 @@ export default class Postimi extends React.Component {
 			minWidth:"410px",
 			margin:"0 auto",
 		}
+
 		const { location } = this.props;
 		const { query } = location;
-		const { id } = query;
-		var obj=null;
+		var { id } = query;
+		var Zgjedhja=null;
 
 		var temp = Store1.getAll();
 		for (var i = temp.length - 1; i >= 0; i--) {
 			if(temp[i].id==id){
-				obj=temp[i];
+				Zgjedhja=temp[i];
 			}
 		}
 
-		const vendi = obj.Vendi;
-		const madhesia = obj.Madhesia;
-		const cmimi = obj.Cmimi;
-		const nrDhomave = obj.nrDhomave;
-		const nrCel = obj.nrCel;
-		const foto = obj.Img;
+		const vendi = Zgjedhja.Vendi;
+		const madhesia = Zgjedhja.Madhesia;
+		const cmimi = Zgjedhja.Cmimi;
+		const nrDhomave = Zgjedhja.nrDhomave;
+		const nrCel = Zgjedhja.nrCel;
+		const foto = Zgjedhja.Img;
+		
 
-		const Objektet = foto.map((el,i) => {
+		const Obj_Fotot = foto.map((el,i) => {
 			return <FototEPlota key={i} Foto={el}/>
 		}); 
 
@@ -87,7 +88,7 @@ export default class Postimi extends React.Component {
 	      <div >
 	      	<div style={divB}>
 	      		<br></br>
-	      		{Objektet[this.state.nr]}
+	      		{Obj_Fotot[this.state.nr]}
 	      		<br></br>
 	      		<div>
 	      			{this.state.nr+1}/{this.props.location.query.NrF}

@@ -5,7 +5,7 @@ import Elementi from "./Element";
 import Store1 from "./Stores/Store1"
 import * as Actions from "./Actions/Actions"
 
-export default class Layout extends React.Component {
+export default class Mundesite_E_Zgjedhjes extends React.Component {
 
 	constructor()
 	{
