@@ -63,7 +63,7 @@ export default class Postimi extends React.Component {
 		const { location } = this.props;
 		const { query } = location;
 		var { id } = query;
-		var Zgjedhja=null;
+		var Zgjedhja;
 
 		var temp = Store1.getAll();
 		for (var i = temp.length - 1; i >= 0; i--) {

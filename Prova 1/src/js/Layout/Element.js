@@ -26,8 +26,6 @@ export default class Element extends React.Component {
 			height:"90%",
 			maxHeight:"700px",
 			margin: "0 auto",
-			textAlign: "center",
-			padding:"20px",
 		}
 		return(
 			<div>
