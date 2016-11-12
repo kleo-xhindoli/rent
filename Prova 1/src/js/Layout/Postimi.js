@@ -48,17 +48,6 @@ export default class Postimi extends React.Component {
 		var btnPara = {
 			float:"left"
 		}
-		var divS ={
-			maxWidth:"90%",
-			margin:"0 auto",
-			textAlign: "left",
-		}
-		var divB ={
-			border: "3px solid rgba(100,100,100,0.6)",
-			width:"60%",
-			minWidth:"410px",
-			margin:"0 auto",
-		}
 
 		const { location } = this.props;
 		const { query } = location;
@@ -77,6 +66,16 @@ export default class Postimi extends React.Component {
 		const cmimi = Zgjedhja.Cmimi;
 		const nrDhomave = Zgjedhja.nrDhomave;
 		const nrCel = Zgjedhja.nrCel;
+		const email = Zgjedhja.Email;
+		const kati = Zgjedhja.Kati;
+		const lloji = Zgjedhja.Lloji;
+		const emri = Zgjedhja.Emri_i_Plote;
+		const mobilimi = Zgjedhja.Mobilimi;
+		const ballkone = Zgjedhja.Numri_Ballkoneve;
+		const parkimi = Zgjedhja.Parkim;
+		const orjentimi = Zgjedhja.Orientimi;
+		const pershkrimi = Zgjedhja.Pershkrimi;
+
 		const foto = Zgjedhja.Img;
 		
 
@@ -85,27 +84,38 @@ export default class Postimi extends React.Component {
 		}); 
 
 	    return (
-	      <div >
-	      	<div style={divB}>
-	      		<br></br>
+	      <div class="container">
+	      	<div>
 	      		{Obj_Fotot[this.state.nr]}
-	      		<br></br>
-	      		<div>
-	      			{this.state.nr+1}/{this.props.location.query.NrF}
-	      		</div>
-	      		<br></br>
-	      		<div style={divS}>
-	      			<button onClick = {this.klikoPara.bind(this)} style={btnPara}>Para</button>
-	      			<button onClick = {this.klikoPas.bind(this)} style={btnPas}>Pas</button>
-	      		</div>
-	      		<div style={divS}>
-	      			<br></br>
-      				<li><h2>Vendi : {vendi}</h2></li>
-	      			<li><h2>Madhesia : {madhesia}</h2></li>
-	      			<li><h2>Cmimi : {cmimi}</h2></li>
-	      			<li><h2>Nr Dhomave : {nrDhomave}</h2></li>
-	      			<li><h2>Nr Cel : {nrCel}</h2></li>
-	      		</div>
+	      	</div>
+	      	<div style={{textAlign:"center"}}>
+	      		{this.state.nr+1}/{Obj_Fotot.length}
+	      	</div>
+	      	<div style={btnPara}>
+	      		<button class="btn btn-default" onClick={this.klikoPara.bind(this)}>Para</button>
+	      	</div>
+	      	<div style={btnPas}>
+	      		<button class="btn btn-default" onClick={this.klikoPas.bind(this)}>Pas</button>
+	      	</div>
+	      	<div style={{marginTop:"60px"}}>
+	      		 <ul class="list-group" style={{textAlign:"left",fontSize:"20px"}}>
+					  <li class="list-group-item">Vendndodhja: {vendi}</li>
+					  <li class="list-group-item">Madhesia Apartamentit: {madhesia}</li>
+					  <li class="list-group-item">Cmimi Apartamentit: {cmimi}</li>
+					  <li class="list-group-item">Numri i Dhomave: {nrDhomave}</li>
+					  <li class="list-group-item">Emri, Mbiemri: {emri}</li>
+					  <li class="list-group-item">Numri i Celularit: {nrCel}</li>
+					  <li class="list-group-item">E-mail: {email}</li>
+					  <li class="list-group-item">Lloji: {lloji}</li>
+					  <li class="list-group-item">Kati: {kati}</li>
+					  <li class="list-group-item">Mobilimi: {mobilimi}</li>
+					  <li class="list-group-item">Ballkone: {ballkone}</li>
+					  <li class="list-group-item">Parkimi: {parkimi}</li>
+					  <li class="list-group-item">Orientimi: {orjentimi}</li>
+					  <li class="list-group-item">Pershkrimi: {pershkrimi}</li>
+				</ul>
+	      	</div>
+	      	<div>
 	      	</div>
 	      </div>
 	    );

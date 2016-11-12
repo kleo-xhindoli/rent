@@ -5,21 +5,19 @@ import React, { Component } from 'react';
 export default class FototEPlota extends React.Component {
 	render() {
 		var foto = this.props.Foto.toString();
-		const styleImg ={
-			maxWidth:"300px",
+		var Style = {
+			maxWidth:"100%",
 			maxHeight:"100%",
-		}
-		const styleDiv={
+			minWidth:"80%",
+			minHeight:"80%",
+		};
+		var StyleDiv = {
 			border: "1px solid black",
-			maxWidth:"400px",
-			height:"400px",
-			margin: "0 auto",
-			textAlign: "center",
-			padding:"20px",
-		}
+			textAlign:"center",
+		};
 		return(
-			<div style={styleDiv}>
-				<img src={foto} style={styleImg}/>
+			<div style={StyleDiv}>
+				<img src={foto} style={Style}/>
 			</div>
 			);
 	}

@@ -1,9 +1,6 @@
 import React from "react";
 import { Link } from "react-router";
 
-import Artikulli from "./Artikulli";
-import Madhesia from "./Madhesia";
-import Cmimi from "./cmimi";
 import Foto from "./Foto";
 import Store1 from "./Stores/Store1"
 
@@ -17,27 +14,30 @@ export default class Element extends React.Component {
 		const foto = this.props.Img[0];
 		const id = this.props.id;
 		const nrf = this.props.NrF;
+		const lloji = this.props.Lloji;
 		const { location } = this.props;
 
-		var Style ={
+		var Style = {
 			border: "1px solid black",
-			width:"90%",
-			maxWidth:"700px",
-			height:"90%",
-			maxHeight:"700px",
-			margin: "0 auto",
+			textAlign:"center",
 		}
 		return(
-			<div>
+			<div style={{textAlign:"center"}}>
 				<br></br>	
-				<div class="row">
-		            <div class="col-lg-12">
+				<div>
+		            <div>
 		            	<div style={Style}>
-			            	<Foto Foto = {foto} />
-			              	<Madhesia Madhesia = { madhesia } />
-							<Cmimi Cmimi = {cmimi}/>
-							<Artikulli Vendi = {vendi}/>
-							<Link to="postimi" query={{ id: id,NrF:nrf}}>Shiko Me Shume</Link>
+			            	<Foto Foto = {foto}/>
+			            	<br></br>
+			            	<div>
+			            		<p>Vendi: {vendi}</p>
+				            	<p>Madhesia: {madhesia}</p>
+				            	<p>Cmimi: {cmimi}</p>
+				            	<p>Lloji: {lloji}</p>
+			            	</div>
+							<div class="btn btn-default">
+								<Link to="postimi" query={{ id: id,NrF:nrf}}>Shiko Me Shume</Link>
+							</div>
 		            	</div>
 					</div>	
 				</div>

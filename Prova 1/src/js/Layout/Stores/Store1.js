@@ -11,13 +11,13 @@ class Store1 extends EventEmitter {
 		];
 	}
 	getAll(){
-		var Array_qe_Shfaqet = JSON.parse(localStorage['Array qe shfaqet']);
-		this.element = Array_qe_Shfaqet;
+		if(U_Thirr==false){
+			this.Reload();
+			U_Thirr=true;
+		}
 		return this.element;
 	}
 	getNumrinEFaqeve(){
-		var NumriF = JSON.parse(localStorage['nr_faqeve']);
-		this.NumriFaqeve = NumriF;
 		return this.NumriFaqeve;
 	}
 
@@ -38,7 +38,10 @@ class Store1 extends EventEmitter {
 				const cmimiZgjedhur = action.c;
 				const vendiZgjedhur = action.v;
 				const madhesiaZgjedhur = action.m;
-				this.sortReklamat(vendiZgjedhur,madhesiaZgjedhur,cmimiZgjedhur);
+				const llojiZgjedhur = action.ll;
+				const numriDhomave_i_Zgjedhur = action.dh;
+				const mobilimiZgjedhur = action.mob;
+				this.sortReklamat(vendiZgjedhur,madhesiaZgjedhur,cmimiZgjedhur,llojiZgjedhur,numriDhomave_i_Zgjedhur,mobilimiZgjedhur);
 				break;
 			}
 			case "FAQIA":{
@@ -58,21 +61,18 @@ class Store1 extends EventEmitter {
 
 		var NumriF = JSON.parse(localStorage['nr_faqeve']);
 		this.NumriFaqeve = NumriF;
+
 		if(NumriFaqes<this.NumriFaqeve.length-1){
-			var x = JSON.parse(localStorage['mundesite']);
-			var b = x.slice(NumriFaqes*8,(NumriFaqes*8) +8);
-
-			var JSON_array_qe_Shfaqet = JSON.stringify(b);
-			localStorage.setItem('Array qe shfaqet',JSON_array_qe_Shfaqet);
+			var b = el.slice(NumriFaqes*8,(NumriFaqes*8) +8);
 		}
-		else{
-			var x = JSON.parse(localStorage['mundesite']);
-			var b = x.slice(NumriFaqes*8);
 
-			var JSON_array_qe_Shfaqet = JSON.stringify(b);
-			localStorage.setItem('Array qe shfaqet',JSON_array_qe_Shfaqet);
+		else{
+			var b = el.slice(NumriFaqes*8);
 		}
 		this.element=b;
+		var JSON_Faqia_Aktuale = JSON.stringify(NumriFaqes);
+		localStorage.setItem('faqia_aktuale',JSON_Faqia_Aktuale);
+
 		this.emit("change");
 	}
 	nextPage()
@@ -92,26 +92,18 @@ class Store1 extends EventEmitter {
 		var NumriF = JSON.parse(localStorage['nr_faqeve']);
 		this.NumriFaqeve = NumriF;
 
-		if(FaqiaAktuale< this.NumriFaqeve.length-1){
+		if(FaqiaAktuale < this.NumriFaqeve.length-1){
 
 			FaqiaAktuale=FaqiaAktuale+1;
 
 			var JSON_Faqia_Aktuale = JSON.stringify(FaqiaAktuale);
 			localStorage.setItem('faqia_aktuale',JSON_Faqia_Aktuale);
 
-			if(FaqiaAktuale<this.NumriFaqeve.length-1){
-				var x = JSON.parse(localStorage['mundesite']);
-				var b = x.slice(FaqiaAktuale*8,(FaqiaAktuale*8) +8);
-
-				var JSON_array_qe_Shfaqet = JSON.stringify(b);
-				localStorage.setItem('Array qe shfaqet',JSON_array_qe_Shfaqet);
+			if(FaqiaAktuale<this.NumriFaqeve.length-1 && FaqiaAktuale>=0){
+				var b = el.slice(FaqiaAktuale*8,(FaqiaAktuale*8) +8);
 			}
 			else{
-				var x = JSON.parse(localStorage['mundesite']);
-				var b = x.slice(FaqiaAktuale*8);
-
-				var JSON_array_qe_Shfaqet = JSON.stringify(b);
-				localStorage.setItem('Array qe shfaqet',JSON_array_qe_Shfaqet);
+				var b = el.slice(FaqiaAktuale*8);
 			}
 			this.element=b;
 			this.emit("change");
@@ -126,7 +118,7 @@ class Store1 extends EventEmitter {
 		*/
 		FaqiaAktuale = JSON.parse(localStorage['faqia_aktuale']);
 
-		if(FaqiaAktuale>=0){
+		if(FaqiaAktuale>0){
 
 			FaqiaAktuale=FaqiaAktuale-1;
 
@@ -134,18 +126,14 @@ class Store1 extends EventEmitter {
 			localStorage.setItem('faqia_aktuale',JSON_Faqia_Aktuale);
 
 			if(FaqiaAktuale>=0){
-				var x = JSON.parse(localStorage['mundesite']);
-				var b = x.slice(FaqiaAktuale*8,(FaqiaAktuale*8)+8);
-
-				var JSON_array_qe_Shfaqet = JSON.stringify(b);
-				localStorage.setItem('Array qe shfaqet',JSON_array_qe_Shfaqet);
+				var b = el.slice(FaqiaAktuale*8,(FaqiaAktuale*8)+8);
 			}
 			this.element=b;
 			this.emit("change");
 		}
 	}
 
-	sortReklamat(VendiZgjedhur,MadhesiaZgjedhur,CmimiZgjedhur){
+	sortReklamat(VendiZgjedhur,MadhesiaZgjedhur,CmimiZgjedhur,LlojiZgjedhur,NumriDhomave_i_Zgjedhur,MobilimiZgjedhur){
 		/*
 			Me ane te ketij funksjoni behet gjetja e te gjithe elemnteve qe permbushin kushtet e perdoruesit.
 			Te gjitha elementet e mundshme futen ne Array "el".
@@ -153,21 +141,55 @@ class Store1 extends EventEmitter {
 		*/
 		el=[];
 		NumriFaqeve=[];
-		for (var i = 0; i <= E.length-1; i++) {
 
-			var cmimiMundesise = E[i].Cmimi.substring(0,E[i].Cmimi.length-1);
-			var madhesiaMundesise = E[i].Madhesia.substring(0,E[i].Madhesia.length-1);
+		var Vendi_temp = VendiZgjedhur;
+		var LlojiZgjedhur_temp = LlojiZgjedhur;
+		var NumriDhomave_i_Zgjedhur_temp = NumriDhomave_i_Zgjedhur;
+		var MobilimiZgjedhur_temp = MobilimiZgjedhur;
 
-			madhesiaMundesise = parseInt(madhesiaMundesise);
-			MadhesiaZgjedhur = parseInt(MadhesiaZgjedhur);
+		if(VendiZgjedhur==""&&MadhesiaZgjedhur==""&&CmimiZgjedhur==""&&LlojiZgjedhur==""&&NumriDhomave_i_Zgjedhur==""&&MobilimiZgjedhur==""){
+			el=E;
+		}
+		else{
 
-			cmimiMundesise = parseInt(cmimiMundesise);
-			CmimiZgjedhur = parseInt(CmimiZgjedhur);
+			if(MadhesiaZgjedhur==""){
+				MadhesiaZgjedhur=10000000;
+			}
+			if(CmimiZgjedhur==""){
+				CmimiZgjedhur=100000;
+			}
+			if(VendiZgjedhur==""){
+				VendiZgjedhur=".";
+			}
+			if(LlojiZgjedhur==""){
+				LlojiZgjedhur=".";
+			}
+			if(NumriDhomave_i_Zgjedhur==""){
+				NumriDhomave_i_Zgjedhur=".";
+			}
+			if(MobilimiZgjedhur==""){
+				MobilimiZgjedhur=".";
+			}
 
-			var vendiMundesise = E[i].Vendi;
+			for (var i = 0; i <= E.length-1; i++) {
 
-			if((VendiZgjedhur==vendiMundesise && CmimiZgjedhur>=cmimiMundesise) && MadhesiaZgjedhur>=madhesiaMundesise){
-				el.push(E[i]);
+				var cmimiMundesise = E[i].Cmimi.substring(0,E[i].Cmimi.length-1);
+				var madhesiaMundesise = E[i].Madhesia.substring(0,E[i].Madhesia.length-1);
+				var llojiMundesise = E[i].Lloji;
+				var numriDhomaveMundesise = E[i].nrDhomave;
+				var mobilimiMundesise = E[i].Mobilimi;
+
+				madhesiaMundesise = parseInt(madhesiaMundesise);
+				MadhesiaZgjedhur = parseInt(MadhesiaZgjedhur);
+
+				cmimiMundesise = parseInt(cmimiMundesise);
+				CmimiZgjedhur = parseInt(CmimiZgjedhur);
+
+				var vendiMundesise = E[i].Vendi;
+
+				if(vendiMundesise.includes(VendiZgjedhur) && CmimiZgjedhur>=cmimiMundesise && MadhesiaZgjedhur>=madhesiaMundesise && llojiMundesise.includes(LlojiZgjedhur) && numriDhomaveMundesise.includes(NumriDhomave_i_Zgjedhur) && mobilimiMundesise.includes(MobilimiZgjedhur)){
+					el.push(E[i]);
+				}
 			}
 		}
 
@@ -176,6 +198,119 @@ class Store1 extends EventEmitter {
 		for (var i = 0; i <= NrFaqeve; i++) {
 			NumriFaqeve.push(i);
 		}
+
+		this.NumriFaqeve = NumriFaqeve;
+		/*
+			Ruajtja ne local storage behet si me poshte:
+			var emer = JSON.stringify(objekt);
+			localStorage.setItem('emri si do ruhet ne local storage',objekti qe ruhet);
+
+			leximi behet si me poshte :
+			var emer = JSON.parse(localStorage['emri i objektit ne local storage']);
+
+			[162-169] ---> ruhen: 1 Gjithe mundesite e gjetura qe plotesojne kushtet e perdoruesit.
+								  2 Numri i gjithe faqeve.
+								  3 Numri i faqes e cila eshte aktualisht e shfaqur ne ekran.
+
+			[175-176] ---> ruhet: 4 te gjitha elementet qe jane ne faqen aktuale.
+		*/
+		var JSON_Numri_Faqeve = JSON.stringify(NumriFaqeve);
+		localStorage.setItem('nr_faqeve',JSON_Numri_Faqeve);
+
+		var JSON_Faqia_Aktuale = JSON.stringify(0);
+		localStorage.setItem('faqia_aktuale',JSON_Faqia_Aktuale);
+
+		var Zgedhjet_e_Perdoruesit =[Vendi_temp, MadhesiaZgjedhur, CmimiZgjedhur, LlojiZgjedhur_temp, NumriDhomave_i_Zgjedhur_temp, MobilimiZgjedhur_temp];
+
+		var JSON_Zgjedhjet = JSON.stringify(Zgedhjet_e_Perdoruesit);
+		localStorage.setItem('Zgjedhjet',JSON_Zgjedhjet);
+
+		/*
+			Te gjitha elementet e gjetura ndodhen ne Array "el".
+			Ne nje faqe jane 8 elemente qe shfaqen.
+			Math.floor((el.length-1)/8) gjen sa faqe me 8 element jane
+			this.element mban vetem elementet qe duhen shfaqur
+
+		*/
+
+		if(el.length-1>8){
+			var b = el.slice(0,8);
+			this.element=b;
+		}
+		else
+		{
+			this.element=el;
+		}
+		this.emit("change");
+		U_Thirr=true;
+	}
+
+	Reload(){
+
+		var Zgjedhjet = JSON.parse(localStorage['Zgjedhjet']);
+
+		var VendiZgjedhur = Zgjedhjet[0];
+		var MadhesiaZgjedhur = Zgjedhjet[1];
+		var CmimiZgjedhur = Zgjedhjet[2];
+		var LlojiZgjedhur = Zgjedhjet[3];
+		var NumriDhomave_i_Zgjedhur = Zgjedhjet[4];
+		var MobilimiZgjedhur = Zgjedhjet[5];
+		el=[];
+		NumriFaqeve=[];
+
+		if(VendiZgjedhur==""&&MadhesiaZgjedhur==""&&CmimiZgjedhur==""&&LlojiZgjedhur==""&&NumriDhomave_i_Zgjedhur==""&&MobilimiZgjedhur==""){
+			el=E;
+		}
+		else{
+
+			if(MadhesiaZgjedhur==""){
+				MadhesiaZgjedhur=10000000;
+			}
+			if(CmimiZgjedhur==""){
+				CmimiZgjedhur=100000;
+			}
+			if(VendiZgjedhur==""){
+				VendiZgjedhur=".";
+			}
+			if(LlojiZgjedhur==""){
+				LlojiZgjedhur=".";
+			}
+			if(NumriDhomave_i_Zgjedhur==""){
+				NumriDhomave_i_Zgjedhur=".";
+			}
+			if(MobilimiZgjedhur==""){
+				MobilimiZgjedhur=".";
+			}
+
+			for (var i = 0; i <= E.length-1; i++) {
+
+				var cmimiMundesise = E[i].Cmimi.substring(0,E[i].Cmimi.length-1);
+				var madhesiaMundesise = E[i].Madhesia.substring(0,E[i].Madhesia.length-1);
+				var llojiMundesise = E[i].Lloji;
+				var numriDhomaveMundesise = E[i].nrDhomave;
+				var mobilimiMundesise = E[i].Mobilimi;
+
+				madhesiaMundesise = parseInt(madhesiaMundesise);
+				MadhesiaZgjedhur = parseInt(MadhesiaZgjedhur);
+
+				cmimiMundesise = parseInt(cmimiMundesise);
+				CmimiZgjedhur = parseInt(CmimiZgjedhur);
+
+				var vendiMundesise = E[i].Vendi;
+
+				if(vendiMundesise.includes(VendiZgjedhur) && CmimiZgjedhur>=cmimiMundesise && MadhesiaZgjedhur>=madhesiaMundesise && llojiMundesise.includes(LlojiZgjedhur) && numriDhomaveMundesise.includes(NumriDhomave_i_Zgjedhur) && mobilimiMundesise.includes(MobilimiZgjedhur)){
+					el.push(E[i]);
+					console.log("U Fut");
+				}
+			}
+		}
+
+
+		const NrFaqeve = Math.floor((el.length-1)/8);
+		for (var i = 0; i <= NrFaqeve; i++) {
+			NumriFaqeve.push(i);
+		}
+		this.NumriFaqeve = NumriFaqeve;
 
 		/*
 			Ruajtja ne local storage behet si me poshte:
@@ -191,14 +326,8 @@ class Store1 extends EventEmitter {
 
 			[175-176] ---> ruhet: 4 te gjitha elementet qe jane ne faqen aktuale.
 		*/
-		var JSON_Mundesite = JSON.stringify(el);
-		localStorage.setItem('mundesite',JSON_Mundesite);
-
 		var JSON_Numri_Faqeve = JSON.stringify(NumriFaqeve);
 		localStorage.setItem('nr_faqeve',JSON_Numri_Faqeve);
-
-		var JSON_Faqia_Aktuale = JSON.stringify(FaqiaAktuale);
-		localStorage.setItem('faqia_aktuale',JSON_Faqia_Aktuale);
 
 		/*
 			Te gjitha elementet e gjetura ndodhen ne Array "el".
@@ -210,291 +339,550 @@ class Store1 extends EventEmitter {
 
 		if(el.length-1>8){
 			var b = el.slice(0,8);
-			var JSON_array_qe_Shfaqet = JSON.stringify(b);
-			localStorage.setItem('Array qe shfaqet',JSON_array_qe_Shfaqet);
 			this.element=b;
 		}
 		else
 		{
 			this.element=el;
-			var JSON_array_qe_Shfaqet = JSON.stringify(el);
-			localStorage.setItem('Array qe shfaqet',JSON_array_qe_Shfaqet);
 		}
 		this.emit("change");
 	}
 }
-var FaqiaAktuale =0;
+var U_Thirr = false;
+var FaqiaAktuale;
 var el=[];
 var NumriFaqeve=[];
 var E = [
 			{
 				Cmimi:"100$",
-				Vendi:"Bllok",
+				Vendi:"Dajt.",
 				Madhesia:"100m",
-				Img:["./js/Layout/Images/1.png","./js/Layout/Images/6.png",],
+				Img:["./js/Layout/Images/8.png","./js/Layout/Images/6.png",],
 				NrF: 2,
+				nrDhomave:"2+1.",
 				nrCel:"0696969699",
-				nrDhomave: 2,
+				Email:"reipano69@yahoo.com",
+				Emri_i_Plote:"Saje Qorri",
+				Pershkrimi:"Shpi super",
+				Lloji:"Shtepi Private.",
+				Kati:3,
+				Mobilimi:"E Mobiluar.",
+				Numri_Ballkoneve:"",
+				Orientimi:"",
+				Parkim:"",
+				id:10000000,
+			},
+			{
+				Cmimi:"100$",
+				Vendi:"Dajt.",
+				Madhesia:"100m",
+				Img:["./js/Layout/Images/8.png","./js/Layout/Images/6.png",],
+				NrF: 2,
+				nrDhomave:"2+1.",
+				nrCel:"0696969699",
+				Email:"reipano69@yahoo.com",
+				Emri_i_Plote:"Saje Qorri",
+				Pershkrimi:"Shpi super",
+				Lloji:"Shtepi Private.",
+				Kati:3,
+				Mobilimi:"E Mobiluar.",
+				Numri_Ballkoneve:"",
+				Orientimi:"",
+				Parkim:"",
 				id:10,
 			},
 			{
 				Cmimi:"100$",
-				Vendi:"Bllok",
+				Vendi:"Dajt.",
 				Madhesia:"100m",
-				Img:["./js/Layout/Images/1.png","./js/Layout/Images/6.png",],
+				Img:["./js/Layout/Images/7.png","./js/Layout/Images/6.png",],
 				NrF: 2,
+				nrDhomave:"2+1.",
 				nrCel:"0696969699",
-				nrDhomave: 2,
+				Email:"reipano69@yahoo.com",
+				Emri_i_Plote:"Saje Qorri",
+				Pershkrimi:"Shpi super",
+				Lloji:"Shtepi Private.",
+				Kati:3,
+				Mobilimi:"E Mobiluar.",
+				Numri_Ballkoneve:"",
+				Orientimi:"",
+				Parkim:"",
 				id:35,
 			},
 			{
 				Cmimi:"100$",
-				Vendi:"Bllok",
+				Vendi:"Bllok.",
 				Madhesia:"100m",
-				Img:["./js/Layout/Images/1.png","./js/Layout/Images/6.png",],
+				Img:["./js/Layout/Images/6.png","./js/Layout/Images/6.png",],
 				NrF: 2,
+				nrDhomave:"2+1.",
 				nrCel:"0696969699",
-				nrDhomave: 2,
+				Email:"reipano69@yahoo.com",
+				Emri_i_Plote:"Saje Qorri",
+				Pershkrimi:"Shpi super",
+				Lloji:"Shtepi Private.",
+				Kati:3,
+				Mobilimi:"E Mobiluar.",
+				Numri_Ballkoneve:"",
+				Orientimi:"",
+				Parkim:"",
 				id:34,
 			},
 			{
 				Cmimi:"100$",
-				Vendi:"Bllok",
+				Vendi:"Kamez.",
 				Madhesia:"100m",
-				Img:["./js/Layout/Images/1.png","./js/Layout/Images/6.png",],
+				Img:["./js/Layout/Images/6.png","./js/Layout/Images/6.png",],
 				NrF: 2,
+				nrDhomave:"2+1.",
 				nrCel:"0696969699",
-				nrDhomave: 2,
+				Email:"reipano69@yahoo.com",
+				Emri_i_Plote:"Saje Qorri",
+				Pershkrimi:"Shpi super",
+				Lloji:"Shtepi Private.",
+				Kati:3,
+				Mobilimi:"E Mobiluar.",
+				Numri_Ballkoneve:"",
+				Orientimi:"",
+				Parkim:"",
 				id:33,
 			},
 			{
 				Cmimi:"100$",
-				Vendi:"Bllok",
+				Vendi:"Selit e Vogel.",
 				Madhesia:"100m",
-				Img:["./js/Layout/Images/1.png","./js/Layout/Images/6.png",],
+				Img:["./js/Layout/Images/6.png","./js/Layout/Images/6.png",],
 				NrF: 2,
+				nrDhomave:"2+1.",
 				nrCel:"0696969699",
-				nrDhomave: 2,
+				Email:"reipano69@yahoo.com",
+				Emri_i_Plote:"Saje Qorri",
+				Pershkrimi:"Shpi super",
+				Lloji:"Shtepi Private.",
+				Kati:3,
+				Mobilimi:"E Mobiluar.",
+				Numri_Ballkoneve:"",
+				Orientimi:"",
+				Parkim:"",
 				id:32,
 			},
 			{
 				Cmimi:"100$",
-				Vendi:"Bllok",
+				Vendi:"Kamez.",
 				Madhesia:"100m",
-				Img:["./js/Layout/Images/1.png","./js/Layout/Images/6.png",],
+				Img:["./js/Layout/Images/5.png","./js/Layout/Images/6.png",],
 				NrF: 2,
+				nrDhomave:"2+1.",
 				nrCel:"0696969699",
-				nrDhomave: 2,
+				Email:"reipano69@yahoo.com",
+				Emri_i_Plote:"Saje Qorri",
+				Pershkrimi:"Shpi super",
+				Lloji:"Shtepi Private.",
+				Kati:3,
+				Mobilimi:"E Mobiluar.",
+				Numri_Ballkoneve:"",
+				Orientimi:"",
+				Parkim:"",
 				id:31,
 			},
 			{
 				Cmimi:"100$",
-				Vendi:"Bllok",
+				Vendi:"Selit e Vogel.",
 				Madhesia:"100m",
-				Img:["./js/Layout/Images/1.png","./js/Layout/Images/6.png",],
+				Img:["./js/Layout/Images/4.png","./js/Layout/Images/6.png",],
 				NrF: 2,
+				nrDhomave:"2+1.",
 				nrCel:"0696969699",
-				nrDhomave: 2,
+				Email:"reipano69@yahoo.com",
+				Emri_i_Plote:"Saje Qorri",
+				Pershkrimi:"Shpi super",
+				Lloji:"Apartament.",
+				Kati:3,
+				Mobilimi:"E Mobiluar.",
+				Numri_Ballkoneve:"",
+				Orientimi:"",
+				Parkim:"",
 				id:30,
 			},
 			{
 				Cmimi:"100$",
-				Vendi:"Bllok",
+				Vendi:"Medrese.",
 				Madhesia:"100m",
-				Img:["./js/Layout/Images/1.png","./js/Layout/Images/6.png",],
+				Img:["./js/Layout/Images/4.png","./js/Layout/Images/6.png",],
 				NrF: 2,
+				nrDhomave:"2+1.",
 				nrCel:"0696969699",
-				nrDhomave: 2,
+				Email:"reipano69@yahoo.com",
+				Emri_i_Plote:"Saje Qorri",
+				Pershkrimi:"Shpi super",
+				Lloji:"Shtepi Private.",
+				Kati:3,
+				Mobilimi:"E Mobiluar.",
+				Numri_Ballkoneve:"",
+				Orientimi:"",
+				Parkim:"",
 				id:29,
 			},
 			{
 				Cmimi:"100$",
-				Vendi:"Selit",
-				Madhesia:"250m",
-				Img:["./js/Layout/Images/2.png","./js/Layout/Images/6.png",],
+				Vendi:"Medrese.",
+				Madhesia:"100m",
+				Img:["./js/Layout/Images/3.png","./js/Layout/Images/6.png",],
 				NrF: 2,
+				nrDhomave:"2+1.",
 				nrCel:"0696969699",
-				nrDhomave: 2,
+				Email:"reipano69@yahoo.com",
+				Emri_i_Plote:"Saje Qorri",
+				Pershkrimi:"Shpi super",
+				Lloji:"Shtepi Private.",
+				Kati:3,
+				Mobilimi:"E Mobiluar.",
+				Numri_Ballkoneve:"",
+				Orientimi:"",
+				Parkim:"",
 				id:25,
 			},	
 			{
 				Cmimi:"100$",
-				Vendi:"Selit",
-				Madhesia:"250m",
-				Img:["./js/Layout/Images/3.png","./js/Layout/Images/6.png",],
+				Vendi:"Bllok.",
+				Madhesia:"100m",
+				Img:["./js/Layout/Images/2.png","./js/Layout/Images/6.png",],
 				NrF: 2,
+				nrDhomave:"2+1.",
 				nrCel:"0696969699",
-				nrDhomave: 2,
+				Email:"reipano69@yahoo.com",
+				Emri_i_Plote:"Saje Qorri",
+				Pershkrimi:"Shpi super",
+				Lloji:"Shtepi Private.",
+				Kati:3,
+				Mobilimi:"E Mobiluar.",
+				Numri_Ballkoneve:"",
+				Orientimi:"",
+				Parkim:"",
 				id:26,
 			},	
 			{
-				Cmimi:"120$",
-				Vendi:"Bllok",
-				Madhesia:"110m",
-				Img:["./js/Layout/Images/4.png","./js/Layout/Images/6.png",],
+				Cmimi:"100$",
+				Vendi:"Medrese.",
+				Madhesia:"100m",
+				Img:["./js/Layout/Images/1.png","./js/Layout/Images/6.png",],
 				NrF: 2,
+				nrDhomave:"2+1.",
 				nrCel:"0696969699",
-				nrDhomave: 2,
+				Email:"reipano69@yahoo.com",
+				Emri_i_Plote:"Saje Qorri",
+				Pershkrimi:"Shpi super",
+				Lloji:"Shtepi Private.",
+				Kati:3,
+				Mobilimi:"E Mobiluar.",
+				Numri_Ballkoneve:"",
+				Orientimi:"",
+				Parkim:"",
 				id:11,
 			},	
 			{
 				Cmimi:"100$",
-				Vendi:"Bllok",
-				Madhesia:"120m",
-				Img:["./js/Layout/Images/5.png","./js/Layout/Images/6.png",],
+				Vendi:"Bllok.",
+				Madhesia:"100m",
+				Img:["./js/Layout/Images/8.png","./js/Layout/Images/6.png",],
 				NrF: 2,
+				nrDhomave:"2+1.",
 				nrCel:"0696969699",
-				nrDhomave: 2,
+				Email:"reipano69@yahoo.com",
+				Emri_i_Plote:"Saje Qorri",
+				Pershkrimi:"Shpi super",
+				Lloji:"Shtepi Private.",
+				Kati:3,
+				Mobilimi:"E Mobiluar.",
+				Numri_Ballkoneve:"",
+				Orientimi:"",
+				Parkim:"",
 				id:12,
 			},
 			{
 				Cmimi:"100$",
-				Vendi:"Selit",
-				Madhesia:"250m",
-				Img:["./js/Layout/Images/1.png","./js/Layout/Images/6.png",],
+				Vendi:"Medrese.",
+				Madhesia:"100m",
+				Img:["./js/Layout/Images/7.png","./js/Layout/Images/6.png",],
 				NrF: 2,
+				nrDhomave:"2+1.",
 				nrCel:"0696969699",
-				nrDhomave: 2,
+				Email:"reipano69@yahoo.com",
+				Emri_i_Plote:"Saje Qorri",
+				Pershkrimi:"Shpi super",
+				Lloji:"Shtepi Private.",
+				Kati:3,
+				Mobilimi:"E Mobiluar.",
+				Numri_Ballkoneve:"",
+				Orientimi:"",
+				Parkim:"",
 				id:27,
 			},	
 			{
 				Cmimi:"100$",
-				Vendi:"Bllok",
-				Madhesia:"130m",
-				Img:["./js/Layout/Images/8.png","./js/Layout/Images/6.png",],
+				Vendi:"Selit.",
+				Madhesia:"100m",
+				Img:["./js/Layout/Images/6.png","./js/Layout/Images/6.png",],
 				NrF: 2,
+				nrDhomave:"2+1.",
 				nrCel:"0696969699",
-				nrDhomave: 2,
+				Email:"reipano69@yahoo.com",
+				Emri_i_Plote:"Saje Qorri",
+				Pershkrimi:"Shpi super",
+				Lloji:"Apartament.",
+				Kati:3,
+				Mobilimi:"E Mobiluar.",
+				Numri_Ballkoneve:"",
+				Orientimi:"",
+				Parkim:"",
 				id:13,
 			},	
 			{
 				Cmimi:"100$",
-				Vendi:"Bllok",
-				Madhesia:"140m",
-				Img:["./js/Layout/Images/2.png","./js/Layout/Images/6.png",],
+				Vendi:"Selit.",
+				Madhesia:"100m",
+				Img:["./js/Layout/Images/5.png","./js/Layout/Images/6.png",],
 				NrF: 2,
+				nrDhomave:"2+1.",
 				nrCel:"0696969699",
-				nrDhomave: 2,
+				Email:"reipano69@yahoo.com",
+				Emri_i_Plote:"Saje Qorri",
+				Pershkrimi:"Shpi super",
+				Lloji:"Shtepi Private.",
+				Kati:3,
+				Mobilimi:"E Mobiluar.",
+				Numri_Ballkoneve:"",
+				Orientimi:"",
+				Parkim:"",
 				id:14,
 			},	
 			{
 				Cmimi:"100$",
-				Vendi:"Myslym Shyr",
-				Madhesia:"280m",
-				Img:["./js/Layout/Images/5.png","./js/Layout/Images/6.png",],
+				Vendi:"Bllok.",
+				Madhesia:"100m",
+				Img:["./js/Layout/Images/3.png","./js/Layout/Images/6.png",],
 				NrF: 2,
+				nrDhomave:"2+1.",
 				nrCel:"0696969699",
-				nrDhomave: 2,
+				Email:"reipano69@yahoo.com",
+				Emri_i_Plote:"Saje Qorri",
+				Pershkrimi:"Shpi super",
+				Lloji:"Shtepi Private.",
+				Kati:3,
+				Mobilimi:"E Mobiluar.",
+				Numri_Ballkoneve:"",
+				Orientimi:"",
+				Parkim:"",
 				id:28,
 			},
 			{
 				Cmimi:"100$",
-				Vendi:"Myslym Shyr",
-				Madhesia:"290m",
-				Img:["./js/Layout/Images/5.png","./js/Layout/Images/6.png",],
+				Vendi:"Selit.",
+				Madhesia:"100m",
+				Img:["./js/Layout/Images/4.png","./js/Layout/Images/6.png",],
 				NrF: 2,
+				nrDhomave:"2+1.",
 				nrCel:"0696969699",
-				nrDhomave: 2,
+				Email:"reipano69@yahoo.com",
+				Emri_i_Plote:"Saje Qorri",
+				Pershkrimi:"Shpi super",
+				Lloji:"Shtepi Private.",
+				Kati:3,
+				Mobilimi:"E Mobiluar.",
+				Numri_Ballkoneve:"",
+				Orientimi:"",
+				Parkim:"",
 				id:29,
 			},
 			{
 				Cmimi:"100$",
-				Vendi:"Bllok",
-				Madhesia:"150m",
-				Img:["./js/Layout/Images/1.png","./js/Layout/Images/6.png",],
+				Vendi:"Myslym Shyr.",
+				Madhesia:"100m",
+				Img:["./js/Layout/Images/2.png","./js/Layout/Images/6.png",],
 				NrF: 2,
+				nrDhomave:"2+1.",
 				nrCel:"0696969699",
-				nrDhomave: 2,
+				Email:"reipano69@yahoo.com",
+				Emri_i_Plote:"Saje Qorri",
+				Pershkrimi:"Shpi super",
+				Lloji:"Shtepi Private.",
+				Kati:3,
+				Mobilimi:"E Mobiluar.",
+				Numri_Ballkoneve:"",
+				Orientimi:"",
+				Parkim:"",
 				id:15,
 			},	
 			{
 				Cmimi:"100$",
-				Vendi:"Bllok",
-				Madhesia:"160m",
-				Img:["./js/Layout/Images/2.png","./js/Layout/Images/6.png",],
+				Vendi:"Myslym Shyr.",
+				Madhesia:"100m",
+				Img:["./js/Layout/Images/1.png","./js/Layout/Images/6.png",],
 				NrF: 2,
+				nrDhomave:"2+1.",
 				nrCel:"0696969699",
-				nrDhomave: 2,
+				Email:"reipano69@yahoo.com",
+				Emri_i_Plote:"Saje Qorri",
+				Pershkrimi:"Shpi super",
+				Lloji:"Shtepi Private.",
+				Kati:3,
+				Mobilimi:"E Mobiluar.",
+				Numri_Ballkoneve:"",
+				Orientimi:"",
+				Parkim:"",
 				id:16,
 			},	
 			{
 				Cmimi:"100$",
-				Vendi:"Bllok",
-				Madhesia:"170m",
-				Img:["./js/Layout/Images/3.png","./js/Layout/Images/6.png",],
+				Vendi:"Myslym Shyr.",
+				Madhesia:"100m",
+				Img:["./js/Layout/Images/8.png","./js/Layout/Images/6.png",],
 				NrF: 2,
+				nrDhomave:"2+1.",
 				nrCel:"0696969699",
-				nrDhomave: 2,
+				Email:"reipano69@yahoo.com",
+				Emri_i_Plote:"Saje Qorri",
+				Pershkrimi:"Shpi super",
+				Lloji:"Apartament.",
+				Kati:3,
+				Mobilimi:"E Mobiluar.",
+				Numri_Ballkoneve:"",
+				Orientimi:"",
+				Parkim:"",
 				id:17,
 			},	
 			{
 				Cmimi:"100$",
-				Vendi:"Bllok",
-				Madhesia:"180m",
-				Img:["./js/Layout/Images/4.png","./js/Layout/Images/6.png",],
+				Vendi:"Bllok.",
+				Madhesia:"100m",
+				Img:["./js/Layout/Images/7.png","./js/Layout/Images/6.png",],
 				NrF: 2,
+				nrDhomave:"2+1.",
 				nrCel:"0696969699",
-				nrDhomave: 2,
+				Email:"reipano69@yahoo.com",
+				Emri_i_Plote:"Saje Qorri",
+				Pershkrimi:"Shpi super",
+				Lloji:"Shtepi Private.",
+				Kati:3,
+				Mobilimi:"E Mobiluar.",
+				Numri_Ballkoneve:"",
+				Orientimi:"",
+				Parkim:"",
 				id:18,
 			},	
 			{
 				Cmimi:"100$",
-				Vendi:"Bllok",
-				Madhesia:"190m",
-				Img:["./js/Layout/Images/3.png","./js/Layout/Images/6.png",],
+				Vendi:"Myslym Shyr.",
+				Madhesia:"100m",
+				Img:["./js/Layout/Images/6.png","./js/Layout/Images/6.png",],
 				NrF: 2,
+				nrDhomave:"2+1.",
 				nrCel:"0696969699",
-				nrDhomave: 2,
+				Email:"reipano69@yahoo.com",
+				Emri_i_Plote:"Saje Qorri",
+				Pershkrimi:"Shpi super",
+				Lloji:"Shtepi Private.",
+				Kati:3,
+				Mobilimi:"E Mobiluar.",
+				Numri_Ballkoneve:"",
+				Orientimi:"",
+				Parkim:"",
 				id:19,
 			},	
 			{
 				Cmimi:"100$",
-				Vendi:"Bllok",
-				Madhesia:"200m",
-				Img:["./js/Layout/Images/7.png","./js/Layout/Images/6.png",],
+				Vendi:"Bllok.",
+				Madhesia:"100m",
+				Img:["./js/Layout/Images/5.png","./js/Layout/Images/6.png",],
 				NrF: 2,
+				nrDhomave:"2+1.",
 				nrCel:"0696969699",
-				nrDhomave: 2,
+				Email:"reipano69@yahoo.com",
+				Emri_i_Plote:"Saje Qorri",
+				Pershkrimi:"Shpi super",
+				Lloji:"Shtepi Private.",
+				Kati:3,
+				Mobilimi:"E Mobiluar.",
+				Numri_Ballkoneve:"",
+				Orientimi:"",
+				Parkim:"",
 				id:20,
 			},	
 			{
 				Cmimi:"100$",
-				Vendi:"Bllok",
-				Madhesia:"210m",
-				Img:["./js/Layout/Images/8.png","./js/Layout/Images/6.png",],
+				Vendi:"Bllok.",
+				Madhesia:"100m",
+				Img:["./js/Layout/Images/4.png","./js/Layout/Images/6.png",],
 				NrF: 2,
+				nrDhomave:"2+1.",
 				nrCel:"0696969699",
-				nrDhomave: 2,
+				Email:"reipano69@yahoo.com",
+				Emri_i_Plote:"Saje Qorri",
+				Pershkrimi:"Shpi super",
+				Lloji:"Apartament.",
+				Kati:3,
+				Mobilimi:"E Mobiluar.",
+				Numri_Ballkoneve:"",
+				Orientimi:"",
+				Parkim:"",
 				id:21,
 			},	
 			{
 				Cmimi:"100$",
-				Vendi:"Bllok",
-				Madhesia:"220m",
-				Img:["./js/Layout/Images/2.png","./js/Layout/Images/6.png",],
+				Vendi:"Myslym Shyr.",
+				Madhesia:"100m",
+				Img:["./js/Layout/Images/3.png","./js/Layout/Images/6.png",],
 				NrF: 2,
+				nrDhomave:"2+1.",
 				nrCel:"0696969699",
-				nrDhomave: 2,
+				Email:"reipano69@yahoo.com",
+				Emri_i_Plote:"Saje Qorri",
+				Pershkrimi:"Shpi super",
+				Lloji:"Apartament.",
+				Kati:3,
+				Mobilimi:"E Mobiluar.",
+				Numri_Ballkoneve:"",
+				Orientimi:"",
+				Parkim:"",
 				id:22,
 			},	
 			{
 				Cmimi:"100$",
-				Vendi:"Bllok",
-				Madhesia:"230m",
-				Img:["./js/Layout/Images/1.png","./js/Layout/Images/6.png",],
+				Vendi:"Bllok.",
+				Madhesia:"100m",
+				Img:["./js/Layout/Images/2.png","./js/Layout/Images/6.png",],
 				NrF: 2,
+				nrDhomave:"2+1.",
 				nrCel:"0696969699",
-				nrDhomave: 2,
+				Email:"reipano69@yahoo.com",
+				Emri_i_Plote:"Saje Qorri",
+				Pershkrimi:"Shpi super",
+				Lloji:"Shtepi Private.",
+				Kati:3,
+				Mobilimi:"E Mobiluar.",
+				Numri_Ballkoneve:"",
+				Orientimi:"",
+				Parkim:"",
 				id:23,
 			},	
 			{
 				Cmimi:"100$",
-				Vendi:"Bllok",
-				Madhesia:"240m",
-				Img:["./js/Layout/Images/4.png","./js/Layout/Images/6.png",],
+				Vendi:"Myslym Shyr.",
+				Madhesia:"100m",
+				Img:["./js/Layout/Images/1.png","./js/Layout/Images/6.png",],
 				NrF: 2,
+				nrDhomave:"2+1.",
 				nrCel:"0696969699",
-				nrDhomave: 2,
+				Email:"reipano69@yahoo.com",
+				Emri_i_Plote:"Saje Qorri",
+				Pershkrimi:"Shpi super",
+				Lloji:"Shtepi Private.",
+				Kati:3,
+				Mobilimi:"E Mobiluar.",
+				Numri_Ballkoneve:"",
+				Orientimi:"",
+				Parkim:"",
 				id:24,
 			},		
 		];

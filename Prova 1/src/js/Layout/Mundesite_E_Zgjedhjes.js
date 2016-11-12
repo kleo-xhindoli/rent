@@ -41,30 +41,11 @@ export default class Mundesite_E_Zgjedhjes extends React.Component {
 			textAlign:"center",
 			color: "black",
 			background: "rgba(100,100,100,0.6)",
-			height:"70px",
 			padding:"15px"
-		}
-		const Div_Buttons_Style = {
-			maxWidth: "700px",
-			minWidth: "250px",
-			margin: "0 auto",
-		}
-		const Button_Pas_Style = {
-			float: "right",
-			width: "10%",
-		}
-		const Button_Para_Style = {
-			float: "left",
-			width: "10%",
-		}
-		const Faqet_Style = {
-			width: "80%",
-			marginLeft: "44%",
 		}
 
 		//Merr te dhena nga store dhe mbush array Faqet me elemente te tipit <NumratEFaqeve>
 		const { NumriFaqeve } = this.state;
-		console.log(NumriFaqeve);
 		const Faqet = NumriFaqeve.map((faqia,j) => {
 			return <NumratEFaqeve key={j} Numri={faqia}/>
 		});
@@ -77,22 +58,18 @@ export default class Mundesite_E_Zgjedhjes extends React.Component {
 		});
 
 		return(
-			<div>
+			<div class="container text-center">
 				<div><h1 style={s}>DuaShpi.com</h1></div>
 				<div>
-		            <div>
+		            <div style={{textAlign:"center"}}>
 		              	{Objektet}
 					</div>
-					<div style={Div_Buttons_Style}>
-						<div style={Button_Para_Style}>
-							<button onClick={this.PrevPage.bind(this)}>Faqia Para</button>
-						</div>	
-						<div style={Button_Pas_Style}>
-							<button	onClick={this.NextPage.bind(this)}>Faqia Pas</button>
-						</div>
-						<div style={Faqet_Style}>
+					<div class="btn-group">
+						<button class="btn-primary" onClick={this.PrevPage.bind(this)}>Faqia Para</button>
+						<div class="pagination">
 							{Faqet}
-						</div>	
+						</div>
+						<button class="btn-primary"	onClick={this.NextPage.bind(this)}>Faqia Pas</button>
 					</div>
 				</div>
 				

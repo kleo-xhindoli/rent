@@ -10,13 +10,16 @@ export function PreviousPage() {
 			type:"PREVIOUSPAGE",
 		});
 }
-export function Sort(vendi, madhesia, cmimi) {
+export function Sort(vendi, madhesia, cmimi, dhomat, lloji, mobilimi) {
 	Dispatcher.dispatch(
 		{
 			type:"SORT",
 			v:vendi,
 			m:madhesia,
-			c:cmimi
+			c:cmimi,
+			dh:dhomat,
+			ll:lloji,
+			mob:mobilimi,
 		});
 }
 export function ShkoTeFaqia(NumriFaqes) {
