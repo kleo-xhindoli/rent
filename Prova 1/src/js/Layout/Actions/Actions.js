@@ -1,5 +1,18 @@
 import Dispatcher from "../Dispatcher";
 
+
+export function Featured(){
+	var b = [];
+		$.post("./a/Gjej_Featured.php", function(data){
+	        b = JSON.parse(data);
+	        console.log(b);
+	        Dispatcher.dispatch({
+				type:"FEATURED",
+				data:b,
+			});
+      	});
+	
+}
 export function NextPage() {
 	Dispatcher.dispatch({
 			type:"NEXTPAGE",
@@ -11,16 +24,24 @@ export function PreviousPage() {
 		});
 }
 export function Sort(vendi, madhesia, cmimi, dhomat, lloji, mobilimi) {
-	Dispatcher.dispatch(
-		{
-			type:"SORT",
-			v:vendi,
-			m:madhesia,
-			c:cmimi,
-			dh:dhomat,
-			ll:lloji,
-			mob:mobilimi,
-		});
+	
+	var b = [] ;
+	$.post("./a/Merr_te_gjitha.php",{Vendi:vendi,Madhesia:madhesia,Cmimi:cmimi,Dhomat:dhomat,LLoji:lloji,Mobilimi:mobilimi},function(data){
+		b = JSON.parse(data);
+		console.log(b);
+		Dispatcher.dispatch(
+			{
+				data:b,
+				type:"SORT",
+				v:vendi,
+				m:madhesia,
+				c:cmimi,
+				dh:dhomat,
+				ll:lloji,
+				mob:mobilimi,
+			});
+	});
+
 }
 export function ShkoTeFaqia(NumriFaqes) {
 	Dispatcher.dispatch({

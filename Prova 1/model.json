@@ -34,3 +34,59 @@
 	"user": "{User Object}"
 
 }
+INSERT
+INTO
+  `apartamentet`(
+    `ID`,
+    `title`,
+    `description`,
+    `price`,
+    `area`,
+    `rooms`,
+    `location`,
+    `zone`,
+    `category`,
+    `floor`,
+    `gallery`,
+    `phone_no`,
+    `email`,
+    `full_name`,
+    `balcony_no`,
+    `orientation`,
+    `has_parking`,
+    `is_furnished`,
+    `has_user`,
+    `approved`,
+    `expiration_date`,
+    `password`,
+    `featured`,
+    `available`,
+    `username`
+  )
+VALUES(
+ NULL,
+  "Apartament",
+  "Apartament super",
+  "200$",
+  "100m",
+  "2+1.",
+  "",
+  "Selite.",
+  "Apartament.",
+  "1",
+  "./js/Layout/Images/8.png,./js/Layout/Images/6.png,",
+  "0696969699",
+  "reipano69@yahoo.com",
+  "Saje Qorri",
+  "3",
+  "Veri",
+  "Ka parkim",
+  "E Mobiluar.",
+  "true",
+  "true",
+  "12/12/2020",
+  "2332323123",
+  "false",
+  "true",
+  "sajeq"
+)

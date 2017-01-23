@@ -1,21 +1,48 @@
 import { EventEmitter } from "events";
 import Dispatcher from "../Dispatcher";
+import * as Actions from "../Actions/Actions"
 
+
+var E;
+var U_Thirr = false;
+var FaqiaAktuale;
+var el=[];
+var NumriFaqeve=[];
+var f=false;
 class Store1 extends EventEmitter {
 
 	constructor(){
 		super();
-		this.element = [
-		];
-		this.NumriFaqeve = [
-		];
+		this.element = [];
+		this.NumriFaqeve = [];
+		this.featured = [];
 	}
+
 	getAll(){
 		if(U_Thirr==false){
-			this.Reload();
-			U_Thirr=true;
+		
+			var Zgjedhjet = JSON.parse(localStorage['Zgjedhjet']);
+			var VendiZgjedhur = Zgjedhjet[0];
+			var MadhesiaZgjedhur = Zgjedhjet[1];
+			var CmimiZgjedhur = Zgjedhjet[2];
+			var LlojiZgjedhur = Zgjedhjet[3];
+			var NumriDhomave_i_Zgjedhur = Zgjedhjet[4];
+			var MobilimiZgjedhur = Zgjedhjet[5];
+			Actions.Sort(VendiZgjedhur,MadhesiaZgjedhur,CmimiZgjedhur,NumriDhomave_i_Zgjedhur,LlojiZgjedhur,MobilimiZgjedhur);
+			U_Thirr = true;
+			
 		}
+		
 		return this.element;
+		
+	}
+	getFeatured(){
+		if(f==false){
+			f=true;
+			Actions.Featured();
+		}
+		
+		return this.featured;
 	}
 	getNumrinEFaqeve(){
 		return this.NumriFaqeve;
@@ -26,6 +53,11 @@ class Store1 extends EventEmitter {
 			Gjen cili aksion duhet Kryer
 		*/
 		switch(action.type){
+			case "FEATURED":{
+				var data = action.data;
+				this.findFeatured(data);
+				break;
+			}
 			case "NEXTPAGE":{
 				this.nextPage();
 				break;
@@ -41,7 +73,10 @@ class Store1 extends EventEmitter {
 				const llojiZgjedhur = action.ll;
 				const numriDhomave_i_Zgjedhur = action.dh;
 				const mobilimiZgjedhur = action.mob;
-				this.sortReklamat(vendiZgjedhur,madhesiaZgjedhur,cmimiZgjedhur,llojiZgjedhur,numriDhomave_i_Zgjedhur,mobilimiZgjedhur);
+				var data = action.data;
+				U_Thirr=true;
+
+				this.sortReklamat(vendiZgjedhur,madhesiaZgjedhur,cmimiZgjedhur,llojiZgjedhur,numriDhomave_i_Zgjedhur,mobilimiZgjedhur,data);
 				break;
 			}
 			case "FAQIA":{
@@ -51,6 +86,11 @@ class Store1 extends EventEmitter {
 			}
 		}
 		
+	}
+
+	findFeatured(data){
+		this.featured=data;
+		this.emit("Featured")
 	}
 	shfaqFaqen(NumriFaqes){
 		/*
@@ -63,11 +103,11 @@ class Store1 extends EventEmitter {
 		this.NumriFaqeve = NumriF;
 
 		if(NumriFaqes<this.NumriFaqeve.length-1){
-			var b = el.slice(NumriFaqes*8,(NumriFaqes*8) +8);
+			var b = el.slice(NumriFaqes*9,(NumriFaqes*9) +9);
 		}
 
 		else{
-			var b = el.slice(NumriFaqes*8);
+			var b = el.slice(NumriFaqes*9);
 		}
 		this.element=b;
 		var JSON_Faqia_Aktuale = JSON.stringify(NumriFaqes);
@@ -100,10 +140,10 @@ class Store1 extends EventEmitter {
 			localStorage.setItem('faqia_aktuale',JSON_Faqia_Aktuale);
 
 			if(FaqiaAktuale<this.NumriFaqeve.length-1 && FaqiaAktuale>=0){
-				var b = el.slice(FaqiaAktuale*8,(FaqiaAktuale*8) +8);
+				var b = el.slice(FaqiaAktuale*9,(FaqiaAktuale*9) +9);
 			}
 			else{
-				var b = el.slice(FaqiaAktuale*8);
+				var b = el.slice(FaqiaAktuale*9);
 			}
 			this.element=b;
 			this.emit("change");
@@ -126,20 +166,20 @@ class Store1 extends EventEmitter {
 			localStorage.setItem('faqia_aktuale',JSON_Faqia_Aktuale);
 
 			if(FaqiaAktuale>=0){
-				var b = el.slice(FaqiaAktuale*8,(FaqiaAktuale*8)+8);
+				var b = el.slice(FaqiaAktuale*9,(FaqiaAktuale*9)+9);
 			}
 			this.element=b;
 			this.emit("change");
 		}
 	}
 
-	sortReklamat(VendiZgjedhur,MadhesiaZgjedhur,CmimiZgjedhur,LlojiZgjedhur,NumriDhomave_i_Zgjedhur,MobilimiZgjedhur){
+	sortReklamat(VendiZgjedhur,MadhesiaZgjedhur,CmimiZgjedhur,LlojiZgjedhur,NumriDhomave_i_Zgjedhur,MobilimiZgjedhur,data){
 		/*
 			Me ane te ketij funksjoni behet gjetja e te gjithe elemnteve qe permbushin kushtet e perdoruesit.
 			Te gjitha elementet e mundshme futen ne Array "el".
 			Numri i faqeve gjendet me poshte me formulen: NrFaqeve = Math.floor((el.length-1)/8)
 		*/
-		el=[];
+		el = data;
 		NumriFaqeve=[];
 
 		var Vendi_temp = VendiZgjedhur;
@@ -147,54 +187,10 @@ class Store1 extends EventEmitter {
 		var NumriDhomave_i_Zgjedhur_temp = NumriDhomave_i_Zgjedhur;
 		var MobilimiZgjedhur_temp = MobilimiZgjedhur;
 
-		if(VendiZgjedhur==""&&MadhesiaZgjedhur==""&&CmimiZgjedhur==""&&LlojiZgjedhur==""&&NumriDhomave_i_Zgjedhur==""&&MobilimiZgjedhur==""){
-			el=E;
-		}
-		else{
-
-			if(MadhesiaZgjedhur==""){
-				MadhesiaZgjedhur=10000000;
-			}
-			if(CmimiZgjedhur==""){
-				CmimiZgjedhur=100000;
-			}
-			if(VendiZgjedhur==""){
-				VendiZgjedhur=".";
-			}
-			if(LlojiZgjedhur==""){
-				LlojiZgjedhur=".";
-			}
-			if(NumriDhomave_i_Zgjedhur==""){
-				NumriDhomave_i_Zgjedhur=".";
-			}
-			if(MobilimiZgjedhur==""){
-				MobilimiZgjedhur=".";
-			}
-
-			for (var i = 0; i <= E.length-1; i++) {
-
-				var cmimiMundesise = E[i].Cmimi.substring(0,E[i].Cmimi.length-1);
-				var madhesiaMundesise = E[i].Madhesia.substring(0,E[i].Madhesia.length-1);
-				var llojiMundesise = E[i].Lloji;
-				var numriDhomaveMundesise = E[i].nrDhomave;
-				var mobilimiMundesise = E[i].Mobilimi;
-
-				madhesiaMundesise = parseInt(madhesiaMundesise);
-				MadhesiaZgjedhur = parseInt(MadhesiaZgjedhur);
-
-				cmimiMundesise = parseInt(cmimiMundesise);
-				CmimiZgjedhur = parseInt(CmimiZgjedhur);
-
-				var vendiMundesise = E[i].Vendi;
-
-				if(vendiMundesise.includes(VendiZgjedhur) && CmimiZgjedhur>=cmimiMundesise && MadhesiaZgjedhur>=madhesiaMundesise && llojiMundesise.includes(LlojiZgjedhur) && numriDhomaveMundesise.includes(NumriDhomave_i_Zgjedhur) && mobilimiMundesise.includes(MobilimiZgjedhur)){
-					el.push(E[i]);
-				}
-			}
-		}
+		
 
 
-		const NrFaqeve = Math.floor((el.length-1)/8);
+		const NrFaqeve = Math.floor((el.length-1)/9);
 		for (var i = 0; i <= NrFaqeve; i++) {
 			NumriFaqeve.push(i);
 		}
@@ -220,11 +216,6 @@ class Store1 extends EventEmitter {
 		var JSON_Faqia_Aktuale = JSON.stringify(0);
 		localStorage.setItem('faqia_aktuale',JSON_Faqia_Aktuale);
 
-		var Zgedhjet_e_Perdoruesit =[Vendi_temp, MadhesiaZgjedhur, CmimiZgjedhur, LlojiZgjedhur_temp, NumriDhomave_i_Zgjedhur_temp, MobilimiZgjedhur_temp];
-
-		var JSON_Zgjedhjet = JSON.stringify(Zgedhjet_e_Perdoruesit);
-		localStorage.setItem('Zgjedhjet',JSON_Zgjedhjet);
-
 		/*
 			Te gjitha elementet e gjetura ndodhen ne Array "el".
 			Ne nje faqe jane 8 elemente qe shfaqen.
@@ -233,14 +224,15 @@ class Store1 extends EventEmitter {
 
 		*/
 
-		if(el.length-1>8){
-			var b = el.slice(0,8);
+		if(el.length-1>9){
+			var b = el.slice(0,9);
 			this.element=b;
 		}
 		else
 		{
 			this.element=el;
 		}
+		console.log("U be");
 		this.emit("change");
 		U_Thirr=true;
 	}
@@ -348,11 +340,8 @@ class Store1 extends EventEmitter {
 		this.emit("change");
 	}
 }
-var U_Thirr = false;
-var FaqiaAktuale;
-var el=[];
-var NumriFaqeve=[];
-var E = [
+
+/*var E = [
 			{
 				Cmimi:"100$",
 				Vendi:"Dajt.",
@@ -886,6 +875,7 @@ var E = [
 				id:24,
 			},		
 		];
+		*/
 const Store = new Store1;
 Dispatcher.register(Store.handleActions.bind(Store));
 window.Dispatcher=Dispatcher;

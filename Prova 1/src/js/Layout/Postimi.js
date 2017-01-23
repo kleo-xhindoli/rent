@@ -9,10 +9,25 @@ import FototEPlota from "./FototEPlota";
 export default class Postimi extends React.Component {
 	constructor(){
 		super();
+		this.getEl = this.getEl.bind(this);
 		this.state = {
 			id: "0",
 			nr: "0",
+			all: Store1.getAll(),
 		};
+	}
+
+	componentWillMount(){
+		Store1.on("change", this.getEl);
+	}
+	componentWillUnmount(){
+		Store1.removeListener("change",this.getEl);
+	}
+
+	getEl(){
+		this.setState({
+			all: Store1.getAll(),
+		});
 	}
 	klikoPas()
 	{
@@ -49,73 +64,191 @@ export default class Postimi extends React.Component {
 			float:"left"
 		}
 
-		const { location } = this.props;
-		const { query } = location;
-		var { id } = query;
-		var Zgjedhja;
+		var temp = [];
+		var vendi = "";
+		var cmimi = "";
+		var madhesia = "";
+		var nrDhomave = "";
+		var nrCel = "";
+		var email = "";
+		var kati = "";
+		var lloji = "";
+		var emri = "";
+		var mobilimi = "";
+		var orjentimi = "";
+		var pershkrimi = "";
+		var foto = [];
+		var Obj_Fotot = [];
+		var ballkone = "";
+		var parkimi = "";
+		var exp_date = "";
+		var titulli = "";
 
-		var temp = Store1.getAll();
-		for (var i = temp.length - 1; i >= 0; i--) {
-			if(temp[i].id==id){
-				Zgjedhja=temp[i];
+		try{
+
+			const { location } = this.props;
+			const { query } = location;
+			var { id } = query;
+			var Zgjedhja = [];
+
+			temp = this.state.all;
+			for (var i = temp.length - 1; i >= 0; i--) {
+				if(temp[i].ID==id){
+					Zgjedhja=temp[i];
+				}
 			}
+
+			titulli=Zgjedhja.title;
+			vendi = Zgjedhja.zone.substring(0,Zgjedhja.zone.length-1);
+			madhesia = Zgjedhja.area;
+			cmimi = Zgjedhja.price;
+			nrDhomave = Zgjedhja.rooms.substring(0,Zgjedhja.rooms.length-1);
+			nrCel = Zgjedhja.phone_no;
+			email = Zgjedhja.email;
+			kati = Zgjedhja.floor;
+			lloji = Zgjedhja.category.substring(0,Zgjedhja.category.length-1);
+			emri = Zgjedhja.full_name;
+			mobilimi = Zgjedhja.is_furnished;
+			ballkone = Zgjedhja.balcony_no;
+			parkimi = Zgjedhja.has_parking;
+			orjentimi = Zgjedhja.orientation;
+			pershkrimi = Zgjedhja.description;
+			exp_date = Zgjedhja.expiration_date;
+
+			foto = [];
+			var tempf = Zgjedhja.gallery;
+			var start = 0;
+
+			for (var i = 0; i < tempf.length; i++) {
+				if(tempf.charAt(i)==","){
+					var t = tempf.substring(start,i);
+					start = i+1;
+					foto.push(t);
+				}
+			}
+
+			Obj_Fotot = foto.map((el,i) => {
+				return <FototEPlota key={i} Foto={el}/>
+			}); 
+
+		}catch(e){
+
 		}
-
-		const vendi = Zgjedhja.Vendi;
-		const madhesia = Zgjedhja.Madhesia;
-		const cmimi = Zgjedhja.Cmimi;
-		const nrDhomave = Zgjedhja.nrDhomave;
-		const nrCel = Zgjedhja.nrCel;
-		const email = Zgjedhja.Email;
-		const kati = Zgjedhja.Kati;
-		const lloji = Zgjedhja.Lloji;
-		const emri = Zgjedhja.Emri_i_Plote;
-		const mobilimi = Zgjedhja.Mobilimi;
-		const ballkone = Zgjedhja.Numri_Ballkoneve;
-		const parkimi = Zgjedhja.Parkim;
-		const orjentimi = Zgjedhja.Orientimi;
-		const pershkrimi = Zgjedhja.Pershkrimi;
-
-		const foto = Zgjedhja.Img;
 		
-
-		const Obj_Fotot = foto.map((el,i) => {
-			return <FototEPlota key={i} Foto={el}/>
-		}); 
 
 	    return (
 	      <div class="container">
-	      	<div>
+	      	<div class="col-xs-12">
 	      		{Obj_Fotot[this.state.nr]}
 	      	</div>
 	      	<div style={{textAlign:"center"}}>
 	      		{this.state.nr+1}/{Obj_Fotot.length}
 	      	</div>
 	      	<div style={btnPara}>
-	      		<button class="btn btn-default" onClick={this.klikoPara.bind(this)}>Para</button>
+	      		<button class="btn btn-primary btn-block" onClick={this.klikoPara.bind(this)}>Para</button>
 	      	</div>
 	      	<div style={btnPas}>
-	      		<button class="btn btn-default" onClick={this.klikoPas.bind(this)}>Pas</button>
+	      		<button class="btn btn-primary btn-block" onClick={this.klikoPas.bind(this)}>Pas</button>
 	      	</div>
+
 	      	<div style={{marginTop:"60px"}}>
-	      		 <ul class="list-group" style={{textAlign:"left",fontSize:"20px"}}>
-					  <li class="list-group-item">Vendndodhja: {vendi}</li>
-					  <li class="list-group-item">Madhesia Apartamentit: {madhesia}</li>
-					  <li class="list-group-item">Cmimi Apartamentit: {cmimi}</li>
-					  <li class="list-group-item">Numri i Dhomave: {nrDhomave}</li>
-					  <li class="list-group-item">Emri, Mbiemri: {emri}</li>
-					  <li class="list-group-item">Numri i Celularit: {nrCel}</li>
-					  <li class="list-group-item">E-mail: {email}</li>
-					  <li class="list-group-item">Lloji: {lloji}</li>
-					  <li class="list-group-item">Kati: {kati}</li>
-					  <li class="list-group-item">Mobilimi: {mobilimi}</li>
-					  <li class="list-group-item">Ballkone: {ballkone}</li>
-					  <li class="list-group-item">Parkimi: {parkimi}</li>
-					  <li class="list-group-item">Orientimi: {orjentimi}</li>
-					  <li class="list-group-item">Pershkrimi: {pershkrimi}</li>
-				</ul>
-	      	</div>
-	      	<div>
+	      		 <div class="col-xs-12">
+		            <div class="card card-single">
+		                <div class="card-block">
+		                    <h3 class="card-title">{titulli}</h3>
+		                    <h3 class="pull-right"></h3>
+		                </div>
+		                <ul class="list-group list-group-flush">
+		                    <li class="list-group-item">
+		                        <span class="fa fa-map-marker card-icon"></span>
+		                        <span>{vendi}</span>
+		                    </li>
+		                    <li class="list-group-item">
+		                        <span class="fa fa-money card-icon"></span>
+		                        <span>{cmimi}/muaj</span>
+		                    </li>
+		                    <li class="list-group-item">
+		                        <span class="fa fa-home card-icon"></span>
+		                        <span>2+1</span>
+		                    </li>
+		                    <li class="list-group-item">
+		                        <span class="fa fa-th-large card-icon"></span>
+		                        <span>{madhesia}<sup>2</sup></span>
+		                    </li>
+		                    <li class="list-group-item">
+		                        <span class="fa fa-user-circle card-icon"></span>
+		                        <span>{emri}</span>
+		                    </li>
+		                </ul>
+		                <div class="card-block">
+		                    <div class="col-md-6" style={{paddingBottom:"10px"}}>
+		                        <div class="btn btn-primary btn-block"><span class="fa fa-phone card-icon"></span><span>{nrCel}</span></div>
+		                    </div>
+		                    <div class="col-md-6">
+		                        <div class="btn-primary btn btn-block"><span class="fa fa-envelope card-icon"></span><span>{email}</span></div>
+		                    </div>
+		                </div>
+		            </div>
+		        </div>
+		        <div class="col-xs-12">
+		            <div class="card description">
+		                <div class="card-header">
+		                    Description
+		                </div>
+		                <div class="card-block">
+		                    <p>{pershkrimi}</p>
+		                </div>
+		            </div>
+		        </div>
+		        <div class="col-xs-12">
+		            <div class="card description">
+		                <div class="card-header">
+		                    Informacione mbi banesen
+		                </div>
+		                <ul class="list-group list-group-flush">
+		                    <li class="list-group-item">
+		                        <div class="col-xs-6 text-xs-center">
+		                            <h6>Lloji i baneses</h6>
+		                            <p>{lloji}</p>
+		                        </div>
+		                        <div class="col-xs-6 text-xs-center">
+		                            <h6>Kati</h6>
+		                            <p>{kati}</p>
+		                        </div>
+		                        <div class="clearfix"></div>
+		                    </li>
+		                    <li class="list-group-item">
+		                        <div class="col-xs-6 text-xs-center">
+		                            <h6>Numri Dhomave</h6>
+		                            <p>{nrDhomave}</p>
+		                        </div>
+		                        <div class="col-xs-6 text-xs-center">
+		                            <h6>Mobilimi</h6>
+		                            <p>{mobilimi}</p>
+		                        </div>
+		                        <div class="clearfix"></div>
+	                        </li>
+	                        <li class="list-group-item">
+		                        <div class="col-xs-6 text-xs-center">
+		                            <h6>Ballkone</h6>
+		                            <p>{ballkone}</p>
+		                        </div>
+		                        <div class="col-xs-6 text-xs-center">
+		                            <h6>Parkimi</h6>
+		                            <p>{parkimi}</p>
+		                        </div>
+		                        <div class="clearfix"></div>
+	                        </li>
+	                        <li class="list-group-item">
+		                        <div class="col-xs-6 text-xs-center">
+		                            <h6>Orientimi</h6>
+		                            <p>{orjentimi}</p>
+		                        </div>
+		                        <div class="clearfix"></div>
+		                    </li>
+		                </ul>
+		            </div>
+		        </div>
 	      	</div>
 	      </div>
 	    );

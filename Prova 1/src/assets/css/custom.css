@@ -1,0 +1,89 @@
+body{
+    background: #eee;
+}
+
+.navbar{
+    background: white;
+    -webkit-box-shadow: 2px 2px 3px 0px rgba(179,177,179,1);
+    -moz-box-shadow: 2px 2px 3px 0px rgba(179,177,179,1);
+    box-shadow: 2px 2px 3px 0px rgba(179,177,179,1);
+    margin-bottom: 1rem;
+}
+
+.card{
+    -webkit-box-shadow: 2px 2px 3px 0px rgba(179,177,179,1);
+    -moz-box-shadow: 2px 2px 3px 0px rgba(179,177,179,1);
+    box-shadow: 2px 2px 3px 0px rgba(179,177,179,1);
+    border: none;
+}
+
+
+.card-img-top{
+    height: 15rem;
+    /*background: url('http://www.moveandstay.com/picture_apartments_main/a1_40194.jpg');*/
+    background-size: cover;
+}
+
+.card-title{
+    color: 	#428bca;
+}
+
+.head-tag{
+    display: inline-block;
+    position: relative;
+    top: 21px;
+    left: -6px;
+    background: #428bca;
+    color: white;
+    padding: 6px 18px;
+    text-transform: uppercase;
+    -webkit-box-shadow: 2px 2px 4px 0px rgba(54,53,54,1);
+    -moz-box-shadow: 2px 2px 4px 0px rgba(54,53,54,1);
+    box-shadow: 2px 2px 4px 0px rgba(54,53,54,1);
+    /*border-radius: 5px 0px 0px 5px;*/
+}
+
+.favorite{
+    float: right;
+    font-size: 24px;
+    color: darkgrey;
+    position: relative;
+    top: 20px;
+    right: 20px;
+    opacity: 0.7;
+}
+
+.favorite-single{
+    color: darkgrey;
+    opacity: 0.7;
+}
+
+.favorite:hover{
+    opacity: 1;
+    cursor: pointer;
+}
+
+.gallery-count{
+    background-color: black;
+    padding: 5px 10px;
+    float: right;
+    color: white;
+    position: relative;
+    top: 200px;
+    right: 0px;
+    opacity: 0.5;
+}
+
+.card-icon{
+    margin-right: 6px;
+}
+
+.img-slider{
+    width: 100%;
+    height: auto;
+}
+
+.card-header{
+    background: #428bca;
+    color: white;
+}
